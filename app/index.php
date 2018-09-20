@@ -32,7 +32,7 @@ $db = new PDO('mysql:host=localhost', 'root', null);
         }
     </style>
 </head>
-<body>
+<body bgcolor="#000000">
     <div class="container">
         <header>
             <img src="https://cdn.rawgit.com/mattrayner/docker-lamp/831976c022782e592b7e2758464b2a9efe3da042/docs/logo.svg" alt="Docker LAMP logo" />
