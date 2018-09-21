@@ -27,13 +27,14 @@ RUN add-apt-repository -y ppa:ondrej/php && \
   apt-get update && \
   apt-get -y upgrade && \
   apt-get -y install supervisor wget git apache2 php-xdebug libapache2-mod-php mysql-server php-mysql pwgen php-apcu php7.0-mcrypt php-gd php-xml php-mbstring php-gettext zip unzip php-zip curl php-curl && \
+  apt-get -y install php-json php-intl php-mcrypt php-imagick php-zip && \
   apt-get -y autoremove && \
   echo "ServerName localhost" >> /etc/apache2/apache2.conf
 
 RUN apt-get -y install software-properties-common && \
   add-apt-repository ppa:certbot/certbot && \
   apt-get update && \
-  apt-get -y install python-certbot-apache
+  apt-get -y install python-certbot-apache bzip2
 
 
 # needed for phpMyAdmin
@@ -76,10 +77,23 @@ RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" &&
     mv composer.phar /usr/local/bin/composer
 
 ENV MYSQL_PASS:-$(pwgen -s 12 1)
+
+
+RUN wget -O /tmp/nextcloud.tar.bz2 https://download.nextcloud.com/server/releases/nextcloud-14.0.0.tar.bz2
+RUN tar xvjf /tmp/nextcloud.tar.bz2 -C /var/www/
+RUN ln -s /var/www/nextcloud-14.0.0 /var/www/nextcloud
+
+
 # config to enable .htaccess
 ADD supporting_files/apache_default /etc/apache2/sites-available/000-default.conf
-ADD supporting_files/apache_redirect.conf /tmp/apache_redirect.conf
+#ADD supporting_files/apache_nextcloud /etc/apache2/sites-available/001-nextcloud.conf
+#RUN ln -s /etc/apache2/sites-available/001-nextcloud.conf /etc/apache2/sites-enabled/001-nextcloud.conf
+#ADD supporting_files/apache_redirect.conf /tmp/apache_redirect.conf
 RUN a2enmod rewrite
+RUN a2enmod headers
+RUN a2enmod env
+RUN a2enmod dir
+RUN a2enmod mime
 
 # Configure /app folder with sample app
 RUN mkdir -p /app && rm -fr /var/www/html && ln -s /app /var/www/html
@@ -89,8 +103,9 @@ ADD app/ /app
 ENV PHP_UPLOAD_MAX_FILESIZE 10M
 ENV PHP_POST_MAX_SIZE 10M
 
+
 # Add volumes for the app and MySql
-VOLUME  ["/etc/mysql", "/var/lib/mysql", "/app" ]
+VOLUME  ["/etc/mysql", "/var/lib/mysql", "/app", "/data" ]
 
 EXPOSE 80 443 3306
 CMD ["/run.sh"]

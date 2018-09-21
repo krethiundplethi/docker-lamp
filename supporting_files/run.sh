@@ -64,8 +64,9 @@ else
     echo "=> Using an existing volume of MySQL"
 fi
 
-certbot --staging --apache -m a.fellnhofer@gmail.com --agree-tos --non-interactive -d www.fellnhofer.engineering
-cp /tmp/apache_redirect.conf /etc/apache2/sites-available/000-default.conf
+#--staging
+certbot --apache -m a.fellnhofer@gmail.com --agree-tos --non-interactive --cert-name fellnhofer.engineering -d fellnhofer.engineering -d www.fellnhofer.engineering -d cloud.fellnhofer.engineering
+#cp /tmp/apache_redirect.conf /etc/apache2/sites-available/000-default.conf
 
 
 exec supervisord -n
