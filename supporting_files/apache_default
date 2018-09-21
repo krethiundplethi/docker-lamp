@@ -1,7 +1,16 @@
 
+NameVirtualHost *
+
 <VirtualHost *:80>
+        ServerName fellnhofer.engineering
+        Redirect permanent / https://www.fellnhofer.engineering
+</VirtualHost>
+
+<VirtualHost *:80>
+	ServerName www.fellnhofer.engineering
         ServerAdmin webmaster@localhost
         DocumentRoot /var/www/html
+        Redirect permanent / https://www.fellnhofer.engineering
         <Directory />
                 Options Indexes FollowSymLinks MultiViews
                 # To make wordpress .htaccess work
@@ -55,3 +64,28 @@
 	SetEnvIf x-forwarded-proto https HTTPS=on
 
 </VirtualHost>
+
+<VirtualHost *:80>
+ DocumentRoot "/var/www/nextcloud"
+ ServerName cloud.fellnhofer.engineering
+ Redirect permanent / https://cloud.fellnhofer.engineering
+
+ ErrorLog ${APACHE_LOG_DIR}/error.log
+ CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+<Directory /var/www/nextcloud/>
+ Options +FollowSymlinks
+ AllowOverride All
+
+ <IfModule mod_dav.c>
+ Dav off
+ </IfModule>
+
+ SetEnv HOME /var/www/nextcloud
+ SetEnv HTTP_HOME /var/www/nextcloud
+ Satisfy Any
+
+</Directory>
+
+</VirtualHost>
+
