@@ -65,7 +65,7 @@ else
 fi
 
 #--staging
-certbot --apache -m a.fellnhofer@gmail.com --agree-tos --non-interactive --cert-name fellnhofer.engineering -d fellnhofer.engineering -d www.fellnhofer.engineering -d cloud.fellnhofer.engineering
+certbot --apache -m a.fellnhofer@gmail.com --agree-tos --non-interactive --cert-name fellnhofer.engineering -d fellnhofer.engineering -d www.fellnhofer.engineering -d cloud.fellnhofer.engineering -d git.fellnhofer.engineering
 #cp /tmp/apache_redirect.conf /etc/apache2/sites-available/000-default.conf
 
 

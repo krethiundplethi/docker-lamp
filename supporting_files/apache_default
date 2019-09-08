@@ -1,5 +1,6 @@
 
 NameVirtualHost *
+Header set X-Content-Type-Options nosniff
 
 <VirtualHost *:80>
         ServerName fellnhofer.engineering
@@ -8,6 +9,7 @@ NameVirtualHost *
 
 <VirtualHost *:443>
         ServerName fellnhofer.engineering
+	Header always set Strict-Transport-Security "max-age=31536000; 
         Redirect permanent / https://www.fellnhofer.engineering
 </VirtualHost>
 
@@ -19,7 +21,8 @@ NameVirtualHost *
 <VirtualHost *:443>
         ServerName www.fellnhofer.engineering
         ServerAdmin webmaster@localhost
-        DocumentRoot /var/www/html
+        Header always set Strict-Transport-Security "max-age=31536000; 
+	DocumentRoot /var/www/html
 
         <Directory />
                 Options Indexes FollowSymLinks MultiViews
@@ -66,7 +69,8 @@ NameVirtualHost *
         # alert, emerg.
         LogLevel warn
 
-        CustomLog ${APACHE_LOG_DIR}/access.log combined
+        #CustomLog ${APACHE_LOG_DIR}/access.log combined
+	CustomLog "|/var/www/anonip.py --ipv4mask 8 --ipv6mask 64 --output ${APACHE_LOG_DIR}/access.log" combined
 
 	#
 	# Set HTTPS environment variable if we came in over secure
@@ -80,25 +84,45 @@ NameVirtualHost *
 </VirtualHost>
 
 <VirtualHost *:443>
- DocumentRoot "/var/www/nextcloud"
- ServerName cloud.fellnhofer.engineering
+	DocumentRoot "/var/www/nextcloud"
+	ServerName cloud.fellnhofer.engineering
 
- ErrorLog ${APACHE_LOG_DIR}/error.log
- CustomLog ${APACHE_LOG_DIR}/access.log combined
+	Header always set Strict-Transport-Security "max-age=31536000; 
 
-<Directory /var/www/nextcloud/>
- Options +FollowSymlinks
- AllowOverride All
+	ErrorLog ${APACHE_LOG_DIR}/error.log
+	#CustomLog ${APACHE_LOG_DIR}/access.log combined
+	CustomLog "|/var/www/anonip.py --ipv4mask 8 --ipv6mask 64 --output ${APACHE_LOG_DIR}/access.log" combined
 
- <IfModule mod_dav.c>
- Dav off
- </IfModule>
+	<Directory /var/www/nextcloud/>
+		Options +FollowSymlinks
+		AllowOverride All
 
- SetEnv HOME /var/www/nextcloud
- SetEnv HTTP_HOME /var/www/nextcloud
- Satisfy Any
+		<IfModule mod_dav.c>
+			Dav off
+		</IfModule>
 
-</Directory>
+		SetEnv HOME /var/www/nextcloud
+		SetEnv HTTP_HOME /var/www/nextcloud
+		Satisfy Any
+	</Directory>
 
+</VirtualHost>
+
+<VirtualHost *:80>
+        ServerName git.fellnhofer.engineering
+        Redirect permanent / https://git.fellnhofer.engineering
+</VirtualHost>
+
+<VirtualHost *:443>
+    ServerName git.fellnhofer.engineering
+    ProxyPreserveHost On
+
+    # setup the proxy
+    <Proxy *>
+        Order allow,deny
+        Allow from all
+    </Proxy>
+    ProxyPass / https://localhost:3000/
+    ProxyPassReverse / https://localhost:3000/
 </VirtualHost>
 
