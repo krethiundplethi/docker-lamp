@@ -27,7 +27,7 @@ RUN add-apt-repository -y ppa:ondrej/php && \
   apt-get update && \
   apt-get -y upgrade && \
   apt-get -y install supervisor wget git apache2 php-xdebug libapache2-mod-php mysql-server php-mysql pwgen php-apcu php7.0-mcrypt php-gd php-xml php-mbstring php-gettext zip unzip php-zip curl php-curl && \
-  apt-get -y install php-json php-intl php-mcrypt php-imagick php-zip && \
+  apt-get -y install php-json php-intl php-mcrypt php-imagick php-zip sendmail && \
   apt-get -y install openssh-server ca-certificates && \
   apt-get -y autoremove && \
   echo "ServerName localhost" >> /etc/apache2/apache2.conf
