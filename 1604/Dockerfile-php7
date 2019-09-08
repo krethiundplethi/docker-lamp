@@ -92,6 +92,8 @@ RUN wget -O /tmp/nextcloud.zip https://download.nextcloud.com/server/releases/ne
 RUN unzip /tmp/nextcloud.zip -D /var/www/
 #RUN tar xvjf /tmp/nextcloud.tar.bz2 -C /var/www/
 #RUN ln -s /var/www/nextcloud-15.0.5 /var/www/nextcloud
+ADD supporting_files/config.php /var/www/nextcloud/config/
+
 
 # Add gitlab
 #RUN curl https://packages.gitlab.com/install/repositories/gitlab/gitlab-ee/script.deb.sh | bash
