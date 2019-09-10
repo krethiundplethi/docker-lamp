@@ -68,5 +68,8 @@ fi
 certbot --apache -m a.fellnhofer@gmail.com --agree-tos --non-interactive --cert-name fellnhofer.engineering -d fellnhofer.engineering -d www.fellnhofer.engineering -d cloud.fellnhofer.engineering -d git.fellnhofer.engineering
 #cp /tmp/apache_redirect.conf /etc/apache2/sites-available/000-default.conf
 
+cp /etc/hosts /tmp/hosts
+sed -i 's/^172.*$/172.17.0.2      fellnhofer.engineering/' /tmp/hosts
+cp /tmp/hosts /etc/hosts
 
 exec supervisord -n
